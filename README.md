@@ -26,10 +26,14 @@ $multiple = $client->get_all( 'event', [
 $single = $client->get( 'event/system:kKCxAqpRX' );
 ```
 
-## License
+## Changelog
 
-This project is licensed under the [GPL-3.0 License](LICENSE).
+Please see [CHANGELOG](CHANGELOG.md) for more information about what has changed recently.
 
 ## Contributing
 
 Contributions are highly welcome! Just leave a pull request of your awesome well-written must-have feature.
+
+## License
+
+This project is licensed under the [GPL-3.0 License](LICENSE).
