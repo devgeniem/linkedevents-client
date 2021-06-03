@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-06-03
+
+- Switched from `guzzlehttp/guzzle` to `rmccue/requests` because of conflicts.
+
 ## [1.0.0] - 2021-06-02
 
 - Initial release

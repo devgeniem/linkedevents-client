@@ -6,8 +6,7 @@
 namespace Geniem\LinkedEvents;
 
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Requests;
 use stdClass;
 
 /**
@@ -16,12 +15,6 @@ use stdClass;
  * @package Geniem\LinkedEvents
  */
 class LinkedEventsClient {
-    /**
-     * Guzzle Client.
-     *
-     * @var \GuzzleHttp\Client
-     */
-    private Client $guzzle;
     /**
      * API Base URI.
      *
@@ -43,7 +36,6 @@ class LinkedEventsClient {
         }
 
         $this->base_uri = trim( rtrim( $base_url, '/ \t\n\r\0\x0B' ) ); // We'll set the last slash.
-        $this->guzzle   = new Client( [ 'base_uri' => $this->base_uri ] );
     }
 
     /**
@@ -54,13 +46,13 @@ class LinkedEventsClient {
      * @param string $endpoint   Endpoint to call. 'event' or 'event/1' to get specific event by ID.
      * @param array  $parameters Optional query parameters. Will be added to the end as ?key=value&key2=value2.
      *
-     * @return array
-     * @throws \Exception|\GuzzleHttp\Exception\GuzzleException If Request or JSON Conversion failed.
+     * @return false|\stdClass
+     * @throws \Exception If Request or JSON Conversion failed.
      */
-    public function get( string $endpoint, array $parameters = [] ) : array {
+    public function get( string $endpoint, array $parameters = [] ) {
         $contents = $this->get_first_page( $endpoint, $parameters );
 
-        return $contents->data ?? [];
+        return $contents->data ?? false;
     }
 
     /**
@@ -73,7 +65,6 @@ class LinkedEventsClient {
      *
      * @return array
      * @throws \Geniem\LinkedEvents\LinkedEventsException If HTTP Response was not 2XX.
-     * @throws \GuzzleHttp\Exception\GuzzleException If Guzzle throw an error.
      * @throws \JsonException If Response could not be converted to JSON.
      */
     public function get_all( string $endpoint, array $parameters = [] ) : array {
@@ -101,7 +92,6 @@ class LinkedEventsClient {
      *
      * @return false|\stdClass
      * @throws \Geniem\LinkedEvents\LinkedEventsException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
     public function get_first_page( string $endpoint, array $parameters = [] ) {
@@ -124,7 +114,6 @@ class LinkedEventsClient {
      * @param string $api_url Api URL To Fetch from.
      *
      * @return string|false
-     * @throws \GuzzleHttp\Exception\GuzzleException If request Failed.
      * @throws LinkedEventsException If API responded with anything other than 2XX.
      */
     public function do_get_request( string $api_url = '' ) {
@@ -132,17 +121,17 @@ class LinkedEventsClient {
             return false;
         }
 
-        $payload     = $this->guzzle->request( 'get', $api_url );
-        $status_code = $payload->getStatusCode();
+        $payload     = Requests::get($api_url);
+        $status_code = $payload->status_code;
 
         if ( $status_code < 200 || $status_code >= 300 ) {
             throw new LinkedEventsException(
-                sprintf( '%s: %s', $api_url, $payload->getReasonPhrase() ),
-                $payload->getStatusCode()
+                sprintf( '%s: %s', $api_url, $payload->body ),
+                $payload->status_code
             );
         }
 
-        return $payload->getBody()->getContents() ?? '';
+        return $payload->body ?? '';
     }
 
     /**
@@ -167,10 +156,6 @@ class LinkedEventsClient {
             }
             catch ( Exception $exception ) {
                 self::log_exception( $exception );
-                $next = '';
-            }
-            catch ( GuzzleException $e ) {
-                self::log_exception( $e );
                 $next = '';
             }
         }
@@ -199,7 +184,7 @@ class LinkedEventsClient {
 
         // Single item, or error message.
         $output       = new stdClass();
-        $output->data = [ $body ];
+        $output->data = $body;
         $output->meta = [];
 
         return $output;
@@ -229,7 +214,7 @@ class LinkedEventsClient {
     /**
      * Write our exception to error log.
      *
-     * @param \Exception|GuzzleException $exception
+     * @param \Exception $exception
      */
     private static function log_exception( $exception ) : void {
         try {
