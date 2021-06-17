@@ -91,12 +91,12 @@ class LinkedEventsClient {
      * @param array  $parameters Request parameters.
      *
      * @return false|\stdClass
-     * @throws \Geniem\LinkedEvents\LinkedEventsException
-     * @throws \JsonException
+     * @throws \Geniem\LinkedEvents\LinkedEventsException If API responded with anything other than 2XX.
+     * @throws \JsonException If API response JSON decode fails.
      */
     public function get_first_page( string $endpoint, array $parameters = [] ) {
         $endpoint_url = sprintf(
-            "/%s/?%s",
+            '/%s/?%s',
             $endpoint,
             self::to_query_parameters( $parameters )
         );
@@ -121,7 +121,7 @@ class LinkedEventsClient {
             return false;
         }
 
-        $payload     = Requests::get($api_url);
+        $payload     = Requests::get( $api_url );
         $status_code = $payload->status_code;
 
         if ( $status_code < 200 || $status_code >= 300 ) {
@@ -191,7 +191,9 @@ class LinkedEventsClient {
     }
 
     /**
-     * @param array|array[] $parameters Parameters to
+     * Generates query string compatible output from array.
+     *
+     * @param array|array[] $parameters Parameters to combine to query string format.
      *
      * @return string
      */
@@ -205,7 +207,7 @@ class LinkedEventsClient {
                 $v = implode( ',', $v );
             }
 
-            return sprintf( "%s=%s", $k, $v );
+            return sprintf( '%s=%s', $k, $v );
         }, array_keys( $parameters ), $parameters );
 
         return implode( '&', $list );
@@ -214,11 +216,11 @@ class LinkedEventsClient {
     /**
      * Write our exception to error log.
      *
-     * @param \Exception $exception
+     * @param \Exception $exception Exception to log.
      */
     private static function log_exception( $exception ) : void {
         try {
-            error_log( json_encode( [
+            error_log( json_encode( [ // phpcs:ignore
                 'message'  => $exception->getMessage(),
                 'code'     => $exception->getCode(),
                 'location' => $exception->getFile() . ':' . $exception->getLine(),
@@ -226,6 +228,7 @@ class LinkedEventsClient {
         }
         catch ( Exception $exception ) {
             // All is lost.
+            error_log( 'Tried to json_encode error, but it failed.' ); // phpcs:ignore
         }
     }
 }

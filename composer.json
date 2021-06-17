@@ -8,6 +8,11 @@
             "homepage": "https://github.com/ivuorinen"
         }
     ],
+    "scripts": {
+        "lint": "vendor/bin/phpcs --standard=phpcs.xml src/ -s --warning-severity=0",
+        "lint-all": "vendor/bin/phpcs --standard=phpcs.xml src/",
+        "lint-fix": "vendor/bin/phpcbf --standard=phpcs.xml --basepath=. ./src/"
+    },
     "require": {
         "php": ">=7.4|>=8.0",
         "ext-json": "*",
@@ -15,5 +20,8 @@
     },
     "autoload": {
         "psr-4": { "Geniem\\LinkedEvents\\" : "src/" }
+    },
+    "require-dev": {
+        "devgeniem/geniem-rules-codesniffer": "^1.1"
     }
 }
