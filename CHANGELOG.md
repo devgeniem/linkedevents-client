@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.1.2] - 2021-09-01
+
+- Encode request params
+
 ## [1.1.1] - 2021-06-17
 
 - Added [PHPCS rules](https://github.com/devgeniem/geniem-rules-codesniffer) and fixed errors.
