@@ -71,7 +71,10 @@ class LinkedEventsClient {
         $output   = [];
         $contents = $this->get_first_page( $endpoint, $parameters );
         $meta     = $contents->meta ?? new stdClass();
-        $output   = array_merge( $output, $contents->data );
+
+        if ( ! empty( $contents ) && isset( $contents->data ) ) {
+            $output = array_merge( $output, $contents->data );
+        }
 
         if ( ! empty( $meta->next ?? '' ) ) {
             $next   = $meta->next ?? '';
@@ -207,7 +210,7 @@ class LinkedEventsClient {
                 $v = implode( ',', $v );
             }
 
-            return sprintf( '%s=%s', $k, $v );
+            return sprintf( '%s=%s', $k, urlencode( $v ) );
         }, array_keys( $parameters ), $parameters );
 
         return implode( '&', $list );
