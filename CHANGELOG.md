@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-10-01
+
+- Add functionality for fetching raw responses
+
 ## [1.1.2] - 2021-09-01
 
 - Encode request params
