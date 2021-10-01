@@ -56,6 +56,42 @@ class LinkedEventsClient {
     }
 
     /**
+     * Get raw items from API
+     *
+     * @param string $endpoint   Endpoint to call. 'event' or 'event/1' to get specific event by ID.
+     * @param array  $parameters Optional query parameters. Will be added to the end as ?key=value&key2=value2.
+     *
+     * @return false|\stdClass
+     * @throws \Geniem\LinkedEvents\LinkedEventsException If API responded with anything other than 2XX.
+     * @throws \JsonException If API response JSON decode fails.
+     */
+    public function get_raw( string $endpoint, array $parameters = [] ) {
+        return $this->get_first_page( $endpoint, $parameters );
+    }
+
+    /**
+     * Get response body
+     *
+     * @param false|stdClass $response API response.
+     *
+     * @return stdClass|null
+     */
+    public function get_response_body( $response ) {
+        return $response->data ?? null;
+    }
+
+    /**
+     * Get response meta
+     *
+     * @param false|stdClass $response API response.
+     *
+     * @return stdClass|null
+     */
+    public function get_response_meta( $response ) {
+        return $response->meta ?? null;
+    }
+
+    /**
      * Get all paged results from the API.
      *
      * Please use only if you know you have checked your search parameters.
