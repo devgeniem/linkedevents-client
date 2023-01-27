@@ -16,7 +16,7 @@
     "require": {
         "php": ">=7.4|>=8.0",
         "ext-json": "*",
-        "rmccue/requests": "^1.8"
+        "rmccue/requests": "^2.0.5"
     },
     "autoload": {
         "psr-4": { "Geniem\\LinkedEvents\\" : "src/" }
