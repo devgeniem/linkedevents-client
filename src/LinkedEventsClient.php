@@ -6,7 +6,7 @@
 namespace Geniem\LinkedEvents;
 
 use Exception;
-use Requests;
+use WpOrg\Requests\Requests;
 use stdClass;
 
 /**
